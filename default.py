@@ -68,10 +68,6 @@ def addEntries():
     for station in channelsContainer.findall(".//channel"):
         title = station.find('title').text
         description = station.find('description').text
-        # if station.find('listeners') is not None:
-        #     title = '%(description)s (%(listeners)s listeners)' \
-        #                   % {"description": description,
-        #                      "listeners": station.find('listeners').text}
         if station.find('largeimage') is not None:
             img = rootURL + station.find('largeimage').text.replace(rootURL, "")
         else:
