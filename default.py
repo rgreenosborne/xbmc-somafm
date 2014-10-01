@@ -13,7 +13,8 @@ __version__ = "0.0.2"
 
 
 def log(msg):
-    print "[PLUGIN] '%s (%s)' " % (__addon__, __version__) + str(msg)
+    xbmc.log(str(msg))
+    # print "[PLUGIN] '%s (%s)' " % (__addon__, __version__) + str(msg)
 
 
 log("Initialized!")
@@ -76,16 +77,13 @@ def addEntries():
         else:
             img = rootURL + station.find('image').text.replace(rootURL,"")
         url = get_content_url(station)
-        log(title)
-        log(description)
-        log(img)
-        log(url)
         li = xbmcgui.ListItem(title, description, thumbnailImage=img)
         li.setProperty("IsPlayable","true")
         xbmcplugin.addDirectoryItem(
             handle=handle,
             url=url,
             listitem=li)
+        log('Added channel {}' % title)
 
 
 addEntries()
