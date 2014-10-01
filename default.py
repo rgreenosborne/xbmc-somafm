@@ -1,7 +1,6 @@
 import sys
 import urllib2
 import xml.etree.ElementTree as ET
-from xbmcgui import DialogProgressBG
 
 import xbmcplugin
 import xbmcgui
@@ -19,8 +18,6 @@ def log(msg):
 
 
 log("Initialized!")
-dialog_progress_bg = DialogProgressBG()
-dialog_progress_bg.create("Updating SomaFM channels")
 log(sys.argv)
 
 rootURL = "http://somafm.com/"
@@ -71,7 +68,6 @@ def addEntries():
     stations = channelsContainer.findall(".//channel")
     for idx, station in enumerate(stations):
         title = station.find('title').text
-        dialog_progress_bg.update(100 * idx / len(stations), message=title)
         description = station.find('description').text
         if station.find('largeimage') is not None:
             img = rootURL + station.find('largeimage').text.replace(rootURL, "")
@@ -83,10 +79,10 @@ def addEntries():
         xbmcplugin.addDirectoryItem(
             handle=handle,
             url=url,
-            listitem=li)
+            listitem=li,
+            totalItems=len(stations))
         # log('Added channel {}' % title.text)
 
 
 addEntries()
-dialog_progress_bg.close()
 xbmcplugin.endOfDirectory(handle)
