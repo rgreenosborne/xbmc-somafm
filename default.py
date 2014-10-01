@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 import xbmcplugin
 import xbmcgui
 import xbmc
+from xbmcplugin import SORT_METHOD_LISTENERS, SORT_METHOD_UNSORTED, SORT_METHOD_GENRE
 
 
 __addon__ = "SomaFM"
@@ -61,6 +62,12 @@ def get_content_url(station):
     return item.getfilename()
 
 
+def transfer_info(li, station, key):
+    listeners = station.find(key)
+    if listeners is not None:
+        li.setInfo(type="Music", infoLabels={key: listeners.text})
+
+
 def addEntries():
     somaXML = getHTMLFor(url="channels.xml")
     channelsContainer = ET.fromstring(somaXML)
@@ -72,10 +79,12 @@ def addEntries():
         if station.find('largeimage') is not None:
             img = rootURL + station.find('largeimage').text.replace(rootURL, "")
         else:
-            img = rootURL + station.find('image').text.replace(rootURL,"")
+            img = rootURL + station.find('image').text.replace(rootURL, "")
         url = get_content_url(station)
         li = xbmcgui.ListItem(title, description, thumbnailImage=img)
-        li.setProperty("IsPlayable","true")
+        li.setProperty("IsPlayable", "true")
+        transfer_info(li, station, 'listeners')
+        transfer_info(li, station, 'genre')
         xbmcplugin.addDirectoryItem(
             handle=handle,
             url=url,
@@ -85,4 +94,7 @@ def addEntries():
 
 
 addEntries()
+xbmcplugin.addSortMethod(handle, SORT_METHOD_UNSORTED)
+xbmcplugin.addSortMethod(handle, SORT_METHOD_LISTENERS)
+xbmcplugin.addSortMethod(handle, SORT_METHOD_GENRE)
 xbmcplugin.endOfDirectory(handle)
