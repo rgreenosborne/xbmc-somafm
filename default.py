@@ -1,6 +1,7 @@
 import sys
 import urllib2
 import xml.etree.ElementTree as ET
+from channel import Channel
 
 import xbmcplugin
 import xbmcgui
@@ -24,8 +25,12 @@ log(sys.argv)
 rootURL = "http://somafm.com/"
 
 # pluginPath = sys.argv[0]
-handle = int(sys.argv[1])
-query = sys.argv[2]
+try:
+    handle = int(sys.argv[1])
+    query = sys.argv[2]
+except:
+    handle = 0
+    query = ""
 
 
 def getHeaders(withReferrer=None):
@@ -73,21 +78,15 @@ def addEntries():
     channelsContainer = ET.fromstring(somaXML)
 
     stations = channelsContainer.findall(".//channel")
-    for idx, station in enumerate(stations):
-        title = station.find('title').text
-        description = station.find('description').text
-        if station.find('largeimage') is not None:
-            img = rootURL + station.find('largeimage').text.replace(rootURL, "")
-        else:
-            img = rootURL + station.find('image').text.replace(rootURL, "")
-        url = get_content_url(station)
-        li = xbmcgui.ListItem(title, description, thumbnailImage=img)
+    for station in stations:
+        channel = Channel(station)
+        li = xbmcgui.ListItem(channel.get_simple_element('title'), channel.get_simple_element('description'), thumbnailImage=channel.getthumbnail())
         li.setProperty("IsPlayable", "true")
         transfer_info(li, station, 'listeners')
         transfer_info(li, station, 'genre')
         xbmcplugin.addDirectoryItem(
             handle=handle,
-            url=url,
+            url=channel.get_content_url(),
             listitem=li,
             totalItems=len(stations))
         # log('Added channel {}' % title.text)
