@@ -1,13 +1,19 @@
+import os
 import sys
 import urllib2
+import urlparse
 import xml.etree.ElementTree as ET
-from channel import Channel
 
+from channel import Channel
+from xbmcgui import ListItem
 import xbmcplugin
 import xbmcgui
 import xbmc
 from xbmcplugin import SORT_METHOD_LISTENERS, SORT_METHOD_UNSORTED, SORT_METHOD_GENRE
+import xbmcvfs
 
+
+CHANNELS_FILE_NAME = "channels.xml"
 
 __addon__ = "SomaFM"
 __addonid__ = "plugin.audio.somafm"
@@ -16,84 +22,101 @@ __version__ = "0.0.2"
 
 def log(msg):
     xbmc.log(str(msg))
-    # print "[PLUGIN] '%s (%s)' " % (__addon__, __version__) + str(msg)
 
 
-log("Initialized!")
 log(sys.argv)
 
 rootURL = "http://somafm.com/"
+tempdir = xbmc.translatePath("special://temp/somafm")
+xbmcvfs.mkdirs(tempdir)
 
-# pluginPath = sys.argv[0]
+LOCAL_CHANNELS_FILE_PATH = os.path.join(tempdir, CHANNELS_FILE_NAME)
+
 try:
+    plugin_url = sys.argv[0]
     handle = int(sys.argv[1])
     query = sys.argv[2]
 except:
+    plugin_url = "plugin://" + __addonid__
     handle = 0
     query = ""
 
 
-def getHeaders(withReferrer=None):
-    headers = {}
-    headers['User-Agent'] = 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3'
-    if withReferrer:
-        headers['Referrer'] = withReferrer
-    return headers
-
-
-def getHTMLFor(url, withData=None, withReferrer=None):
-    url = rootURL + url
-    log("Get HTML for URL: " + url)
-    req = urllib2.Request(url, withData, getHeaders(withReferrer))
-    response = urllib2.urlopen(req)
-    data = response.read()
+def fetch_remote_channel_data():
+    response = urllib2.urlopen(rootURL + CHANNELS_FILE_NAME)
+    channel_data = response.read()
     response.close()
-    return data
+    with open(LOCAL_CHANNELS_FILE_PATH, 'w') as local_channels_xml:
+        local_channels_xml.write(channel_data)
+    return channel_data
 
 
-def get_best_playlist(station):
-    for playlist_key in ['highestpls', 'fastpls', 'slowpls']:
-        playlist = station.find(playlist_key)
-        if playlist is not None:
-            log('Using {} playlist {}'.format(playlist_key, playlist.text))
-            return playlist
+def fetch_local_channel_data():
+    with open(LOCAL_CHANNELS_FILE_PATH) as local_channels_file:
+        return local_channels_file.read()
 
 
-def get_content_url(station):
-    url = rootURL + get_best_playlist(station).text.replace(rootURL, "")
-    play_list = xbmc.PlayList(xbmc.PLAYLIST_MUSIC)
-    play_list.load(url)
-    item = play_list.__getitem__(0)
-    return item.getfilename()
+def fetch_channel_data(*strategies):
+    for strategy in strategies:
+        try:
+            return strategy()
+        except:
+            pass
 
 
-def transfer_info(li, station, key):
-    listeners = station.find(key)
-    if listeners is not None:
-        li.setInfo(type="Music", infoLabels={key: listeners.text})
+def build_directory():
+    channel_data = fetch_channel_data(fetch_remote_channel_data, fetch_local_channel_data)
+    xml_data = ET.fromstring(channel_data)
 
-
-def addEntries():
-    somaXML = getHTMLFor(url="channels.xml")
-    channelsContainer = ET.fromstring(somaXML)
-
-    stations = channelsContainer.findall(".//channel")
+    stations = xml_data.findall(".//channel")
     for station in stations:
         channel = Channel(station)
-        li = xbmcgui.ListItem(channel.get_simple_element('title'), channel.get_simple_element('description'), thumbnailImage=channel.getthumbnail())
+        li = xbmcgui.ListItem(
+            channel.get_simple_element('title'),
+            channel.get_simple_element('description'),
+            channel.geticon(),
+            channel.getthumbnail(),
+            plugin_url + channel.getid())
+
         li.setProperty("IsPlayable", "true")
-        transfer_info(li, station, 'listeners')
-        transfer_info(li, station, 'genre')
+
+        for element, info in [('listeners', 'listeners'),
+                              ('genre', 'genre'),
+                              ('dj', 'artist'),
+                              ('description', 'comment'),
+                              ('title', 'title')]:
+            value = channel.get_simple_element(element)
+            li.setInfo("Music", {info: value})
+
         xbmcplugin.addDirectoryItem(
             handle=handle,
-            url=channel.get_content_url(),
+            url=plugin_url + channel.getid(),
             listitem=li,
             totalItems=len(stations))
-        # log('Added channel {}' % title.text)
+    xbmcplugin.addSortMethod(handle, SORT_METHOD_UNSORTED)
+    xbmcplugin.addSortMethod(handle, SORT_METHOD_LISTENERS)
+    xbmcplugin.addSortMethod(handle, SORT_METHOD_GENRE)
 
 
-addEntries()
-xbmcplugin.addSortMethod(handle, SORT_METHOD_UNSORTED)
-xbmcplugin.addSortMethod(handle, SORT_METHOD_LISTENERS)
-xbmcplugin.addSortMethod(handle, SORT_METHOD_GENRE)
+def play(item_to_play):
+    channel_data = fetch_channel_data(fetch_local_channel_data, fetch_remote_channel_data)
+    xml_data = ET.fromstring(channel_data)
+    channel_data = xml_data.find(".//channel[@id='" + item_to_play + "']")
+    channel = Channel(channel_data)
+    list_item = ListItem(channel.get_simple_element('title'),
+                         channel.get_simple_element('description'),
+                         channel.geticon(),
+                         channel.getthumbnail(),
+                         channel.get_content_url())
+    xbmcplugin.setResolvedUrl(handle, True, list_item)
+
+
+path = urlparse.urlparse(plugin_url).path
+item_to_play = os.path.basename(path)
+
+if item_to_play:
+    play(item_to_play)
+else:
+    build_directory()
+
 xbmcplugin.endOfDirectory(handle)
