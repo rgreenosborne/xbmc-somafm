@@ -58,8 +58,8 @@ class Channel(object):
         return streamurl
 
     def getthumbnail(self):
-        return self.get_simple_element('image', 'largeimage', 'xlimage')
+        return self.get_simple_element('xlimage', 'largeimage', 'image')
 
 
     def geticon(self):
-        return self.get_simple_element('xlimage', 'largeimage', 'image')
+        return self.get_simple_element('largeimage', 'xlimage', 'image')
