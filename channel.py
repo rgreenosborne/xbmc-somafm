@@ -1,5 +1,6 @@
 import os
 import random
+import shutil
 import urllib2
 import urlparse
 from xml.etree import ElementTree
@@ -10,8 +11,27 @@ __author__ = 'Oderik'
 
 
 class Channel(object):
-    def __init__(self, source=ElementTree.Element("channel")):
+    def prepare_cache(self):
+        self.ensure_dir(self.cache_dir)
+        if not os.path.exists(self.version_file_path):
+            with open(self.version_file_path, 'w') as version_file:
+                version_file.write(self.get_simple_element("updated"))
+
+    def cleanup_cache(self):
+        if os.path.exists(self.version_file_path):
+            with open(self.version_file_path) as version_file:
+                cached_version = version_file.read()
+                if cached_version != self.get_simple_element("updated"):
+                    version_file.close()
+                    shutil.rmtree(self.cache_dir, True)
+
+    def __init__(self, cache_dir, source=ElementTree.Element("channel")):
         self.source = source
+        self.cache_dir = os.path.join(cache_dir, self.getid())
+        self.version_file_path = os.path.join(self.cache_dir, "updated")
+        self.cleanup_cache()
+        self.prepare_cache()
+
 
     def get_simple_element(self, *tags):
         for tag in tags:
@@ -31,15 +51,18 @@ class Channel(object):
     def getid(self):
         return self.source.attrib['id']
 
+    def ensure_dir(self, filepath):
+        if not os.path.exists(filepath):
+            os.makedirs(filepath)
+
     def get_playlist_file(self, playlist_url):
         url_path = urlparse.urlparse(playlist_url).path
         filename = os.path.split(url_path)[1]
-        filepath = os.path.join(self.get_simple_element('updated'), filename)
+        filepath = os.path.join(self.cache_dir, filename)
         filepath = os.path.abspath(filepath)
         if not os.path.exists(filepath):
             response = urllib2.urlopen(playlist_url)
-            if not os.path.exists(os.path.dirname(filepath)):
-                os.makedirs(os.path.dirname(filepath))
+            self.prepare_cache()
             with open(os.path.abspath(filepath), "w") as playlist_file:
                 playlist_file.write(response.read())
             response.close()

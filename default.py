@@ -70,7 +70,7 @@ def build_directory():
 
     stations = xml_data.findall(".//channel")
     for station in stations:
-        channel = Channel(station)
+        channel = Channel(tempdir, station)
         li = xbmcgui.ListItem(
             channel.get_simple_element('title'),
             channel.get_simple_element('description'),
@@ -102,7 +102,7 @@ def play(item_to_play):
     channel_data = fetch_channel_data(fetch_local_channel_data, fetch_remote_channel_data)
     xml_data = ET.fromstring(channel_data)
     channel_data = xml_data.find(".//channel[@id='" + item_to_play + "']")
-    channel = Channel(channel_data)
+    channel = Channel(tempdir, channel_data)
     list_item = ListItem(channel.get_simple_element('title'),
                          channel.get_simple_element('description'),
                          channel.geticon(),
