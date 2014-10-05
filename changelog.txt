@@ -1,3 +1,11 @@
+[B]Version 0.1.0 - 2014-10-05[/B]
+
+- Automatically select a stream and instantly start playback when station is selected
+- Cache playlist files
+- Settings for quality, format and firewall streams
+
+
+
 [B]Version 0.0.2 - 2013-07-21[/B]
 
 - Use SomaFM XML API.
