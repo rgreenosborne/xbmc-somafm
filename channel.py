@@ -4,8 +4,10 @@ import shutil
 import urllib2
 import urlparse
 from xml.etree import ElementTree
+
 import xbmc
 from xbmc import PLAYLIST_MUSIC
+
 
 __author__ = 'Oderik'
 
@@ -25,13 +27,22 @@ class Channel(object):
                     version_file.close()
                     shutil.rmtree(self.cache_dir, True)
 
-    def __init__(self, cache_dir, source=ElementTree.Element("channel")):
+    def __init__(self, handle, cache_dir, source=ElementTree.Element("channel"), quality_priority=None,
+                 format_priority=None, firewall_mode=False):
+        self.handle = handle
         self.source = source
         self.cache_dir = os.path.join(cache_dir, self.getid())
         self.version_file_path = os.path.join(self.cache_dir, "updated")
         self.cleanup_cache()
         self.prepare_cache()
-
+        self.quality_priority = quality_priority
+        self.format_priority = format_priority
+        if not self.format_priority:
+            self.format_priority = ['mp3', 'aac']
+        if not self.quality_priority:
+            self.quality_priority = ['fastpls', 'highestpls', 'slowpls']
+        self.firewall_mode = firewall_mode
+        print self
 
     def get_simple_element(self, *tags):
         for tag in tags:
@@ -40,13 +51,18 @@ class Channel(object):
                 return element.text
 
     def __repr__(self):
-        return self.__class__.__name__ + ': ' + self.getid()
+        return "{}: {} ({}, {}, {})".format(self.__class__.__name__, self.getid(),
+               self.quality_priority, self.format_priority, self.firewall_mode)
 
-    def get_playlist_url_and_format(self):
-        for playlist_key in ['highestpls', 'fastpls', 'slowpls']:
-            playlist_element = self.source.find(playlist_key)
-            if playlist_element is not None:
-                return playlist_element.text, playlist_element.attrib['format']
+    def get_prioritized_playlists(self):
+        playlists = []
+        for playlist_tag in self.quality_priority:
+            for format in self.format_priority:
+                for playlist_element in self.source.findall(playlist_tag):
+                    format_attrib = playlist_element.attrib['format']
+                    if format in format_attrib:
+                        playlists.append((playlist_tag, format_attrib, playlist_element.text))
+        return playlists
 
     def getid(self):
         return self.source.attrib['id']
@@ -69,16 +85,21 @@ class Channel(object):
         return filepath
 
     def get_content_url(self):
-        playlist_url, media_format = self.get_playlist_url_and_format()
-        filepath = self.get_playlist_file(playlist_url)
-        print media_format + " " + playlist_url
-
-        play_list = xbmc.PlayList(PLAYLIST_MUSIC)
-        print "Loading playlist " + filepath
-        play_list.load(filepath)
-        streamurl = play_list.__getitem__(random.randrange(0, play_list.size())).getfilename()
-        print "Selected stream url: " + streamurl
-        return streamurl
+        for playlist_meta in self.get_prioritized_playlists():
+            print "Trying " + str(playlist_meta)
+            filepath = self.get_playlist_file(playlist_meta[2])
+            play_list = xbmc.PlayList(PLAYLIST_MUSIC)
+            play_list.load(filepath)
+            streams = []
+            for i in range(0, play_list.size()):
+                stream_url = play_list.__getitem__(i).getfilename()
+                if (urlparse.urlparse(stream_url).port is None) == self.firewall_mode:
+                    streams.append(stream_url)
+                    print "Accepting " + stream_url
+                else:
+                    print "Rejecting " + stream_url
+            if len(streams) > 0:
+                return random.choice(streams)
 
     def getthumbnail(self):
         return self.get_simple_element('xlimage', 'largeimage', 'image')
