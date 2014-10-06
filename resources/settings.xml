@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-    <category label="Allgemein">
-        <setting id="priority_quality" type="enum" label="Qualität" values="High, Medium, Low|Medium, High, Low|Medium, Low, High|Low, Medium, High" default="2"/>
-        <setting id="priority_format" type="enum" label="Format" values="MP3 only|MP3, AAC|AAC, MP3|AAC only" default="1"/>
+    <category label="32000">
+        <setting id="priority_quality" type="enum" label="32001" lvalues="32910|32911|32912|32913" default="2"/>
+        <setting id="priority_format" type="enum" label="32002" lvalues="32920|32921|32922|32923" default="1"/>
         <setting type="sep"/>
-        <setting id="firewall" type="bool" label="Firewall-Modus" default="false"/>
+        <setting id="firewall" type="bool" label="32003" default="false"/>
     </category>
 </settings>

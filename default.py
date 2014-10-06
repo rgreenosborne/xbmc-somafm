@@ -113,10 +113,10 @@ def format_priority():
 
 def quality_priority():
     return [
-        ['highestpls', 'fastpls', 'slowpls', ],
-        ['fastpls', 'highestpls', 'slowpls', ],
-        ['fastpls', 'slowpls', 'highestpls', ],
         ['slowpls', 'fastpls', 'highestpls', ],
+        ['fastpls', 'slowpls', 'highestpls', ],
+        ['fastpls', 'highestpls', 'slowpls', ],
+        ['highestpls', 'fastpls', 'slowpls', ],
     ][int(xbmcplugin.getSetting(handle, "priority_quality"))]
 
 
