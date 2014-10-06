@@ -26,19 +26,19 @@ msgstr ""
 
 #quality
 
-msgctxt "#32910"
+msgctxt "#32912"
 msgid "High, medium, low"
 msgstr ""
 
-msgctxt "#32911"
+msgctxt "#32912"
 msgid "Medium, high, low"
 msgstr ""
 
-msgctxt "#32912"
+msgctxt "#32911"
 msgid "Medium, low, high"
 msgstr ""
 
-msgctxt "#32913"
+msgctxt "#32910"
 msgid "Low, medium, high"
 msgstr ""
 
