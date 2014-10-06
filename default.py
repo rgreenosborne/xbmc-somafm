@@ -1,10 +1,12 @@
 import os
+import shutil
 import sys
 import urllib2
 import urlparse
 import xml.etree.ElementTree as ET
 
 from channel import Channel
+import xbmcaddon
 from xbmcgui import ListItem
 import xbmcplugin
 import xbmcgui
@@ -18,7 +20,6 @@ CHANNELS_FILE_NAME = "channels.xml"
 __addon__ = "SomaFM"
 __addonid__ = "plugin.audio.somafm"
 __version__ = "0.0.2"
-
 
 def log(msg):
     xbmc.log(str(msg))
@@ -133,12 +134,27 @@ def play(item_to_play):
     xbmcplugin.setResolvedUrl(handle, True, list_item)
 
 
-path = urlparse.urlparse(plugin_url).path
-item_to_play = os.path.basename(path)
+def clearcache():
+    shutil.rmtree(tempdir, True)
+    addon = xbmcaddon.Addon(id=__addonid__)
+    heading = addon.getLocalizedString(32004)
+    message = addon.getLocalizedString(32005)
+    xbmcgui.Dialog().notification(
+        heading, message, xbmcgui.NOTIFICATION_INFO, 1000)
 
-if item_to_play:
-    play(item_to_play)
+
+if handle == 0:
+    if query == "clearcache":
+        clearcache()
+    else:
+        print query
 else:
-    build_directory()
+    path = urlparse.urlparse(plugin_url).path
+    item_to_play = os.path.basename(path)
 
-xbmcplugin.endOfDirectory(handle)
+    if item_to_play:
+        play(item_to_play)
+    else:
+        build_directory()
+
+    xbmcplugin.endOfDirectory(handle)

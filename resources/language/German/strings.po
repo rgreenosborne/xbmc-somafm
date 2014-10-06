@@ -22,6 +22,22 @@ msgctxt "#32003"
 msgid "Firewall friendly"
 msgstr "Firewallfreundlich"
 
+msgctxt "#32004"
+msgid "SomaFM"
+msgstr "SomaFM"
+
+msgctxt "#32005"
+msgid "Cache cleared."
+msgstr "Cache gelöscht."
+
+msgctxt "#32006"
+msgid "Cache"
+msgstr "Cache"
+
+msgctxt "#32007"
+msgid "Clear cache"
+msgstr "Cache löschen"
+
 #enums
 
 #quality
