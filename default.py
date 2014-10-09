@@ -4,6 +4,7 @@ import sys
 import urllib2
 import urlparse
 import xml.etree.ElementTree as ET
+import time
 
 from channel import Channel
 import xbmcaddon
@@ -20,6 +21,9 @@ CHANNELS_FILE_NAME = "channels.xml"
 __addon__ = "SomaFM"
 __addonid__ = "plugin.audio.somafm"
 __version__ = "0.0.2"
+
+__ms_per_day__ = 24 * 60 * 60 * 1000
+
 
 def log(msg):
     xbmc.log(str(msg))
@@ -57,16 +61,26 @@ def fetch_local_channel_data():
         return local_channels_file.read()
 
 
+def fetch_cached_channel_data():
+    if os.path.getmtime(LOCAL_CHANNELS_FILE_PATH) + cache_ttl_in_ms() > time.time():
+        print "Using cached channel.xml"
+        return fetch_local_channel_data()
+    # don't delete the cached file so we can still use it as a fallback
+    # if something goes wrong fetching the channel data from server
+
+
 def fetch_channel_data(*strategies):
     for strategy in strategies:
         try:
-            return strategy()
+            result = strategy()
+            if result is not None:
+                return result
         except:
             pass
 
 
 def build_directory():
-    channel_data = fetch_channel_data(fetch_remote_channel_data, fetch_local_channel_data)
+    channel_data = fetch_channel_data(fetch_cached_channel_data, fetch_remote_channel_data, fetch_local_channel_data)
     xml_data = ET.fromstring(channel_data)
 
     stations = xml_data.findall(".//channel")
@@ -119,6 +133,12 @@ def quality_priority():
         ['fastpls', 'highestpls', 'slowpls', ],
         ['highestpls', 'fastpls', 'slowpls', ],
     ][int(xbmcplugin.getSetting(handle, "priority_quality"))]
+
+
+def cache_ttl_in_ms():
+    return [
+        0, __ms_per_day__, 7 * __ms_per_day__, 30 * __ms_per_day__
+    ][int(xbmcplugin.getSetting(handle, "cache_ttl"))]
 
 
 def play(item_to_play):

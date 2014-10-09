@@ -38,6 +38,10 @@ msgctxt "#32007"
 msgid "Clear cache"
 msgstr ""
 
+msgctxt "#32008"
+msgid "Refresh channel list from server"
+msgstr ""
+
 #enums
 
 #quality
@@ -76,3 +80,20 @@ msgctxt "#32923"
 msgid "AAC only"
 msgstr ""
 
+#ttl
+
+msgctxt "#32930"
+msgid "Always"
+msgstr ""
+
+msgctxt "#32931"
+msgid "Once in a day"
+msgstr ""
+
+msgctxt "#32932"
+msgid "Once in a week"
+msgstr ""
+
+msgctxt "#32933"
+msgid "Once in a month"
+msgstr ""
