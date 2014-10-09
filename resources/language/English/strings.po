@@ -35,7 +35,7 @@ msgid "Cache"
 msgstr ""
 
 msgctxt "#32007"
-msgid "Clear cache"
+msgid "Clear channel and playlist cache"
 msgstr ""
 
 msgctxt "#32008"

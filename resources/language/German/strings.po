@@ -35,8 +35,8 @@ msgid "Cache"
 msgstr "Cache"
 
 msgctxt "#32007"
-msgid "Clear cache"
-msgstr "Cache löschen"
+msgid "Clear channel and playlist cache"
+msgstr "Cache mit Senderliste und Playlists löschen"
 
 msgctxt "#32008"
 msgid "Refresh channel list from server"
