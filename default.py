@@ -6,7 +6,7 @@ import urlparse
 import xml.etree.ElementTree as ET
 import time
 
-from channel import Channel
+from lib.channel import Channel
 import xbmcaddon
 from xbmcgui import ListItem
 import xbmcplugin
@@ -128,7 +128,6 @@ def quality_priority():
     setting = xbmcplugin.getSetting(handle, "priority_quality")
     result = [['slowpls', 'fastpls', 'highestpls', ], ['fastpls', 'slowpls', 'highestpls', ],
                 ['fastpls', 'highestpls', 'slowpls', ], ['highestpls', 'fastpls', 'slowpls', ], ][int(setting)]
-    print "Bla"
     print "Quality setting is %s, using priority %s" % (setting, str(result))
     return result
 
