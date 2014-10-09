@@ -42,7 +42,6 @@ class Channel(object):
         if not self.quality_priority:
             self.quality_priority = ['fastpls', 'highestpls', 'slowpls']
         self.firewall_mode = firewall_mode
-        print self
 
     def get_simple_element(self, *tags):
         for tag in tags:
@@ -52,7 +51,7 @@ class Channel(object):
 
     def __repr__(self):
         return "{}: {} ({}, {}, {})".format(self.__class__.__name__, self.getid(),
-               self.quality_priority, self.format_priority, self.firewall_mode)
+                                            self.quality_priority, self.format_priority, self.firewall_mode)
 
     def get_prioritized_playlists(self):
         playlists = []

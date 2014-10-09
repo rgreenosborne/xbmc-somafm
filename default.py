@@ -118,27 +118,26 @@ def firewall_mode():
 
 
 def format_priority():
-    return [
-        ["mp3"],
-        ["mp3", "aac"],
-        ["aac", "mp3"],
-        ["aac"],
-    ][int(xbmcplugin.getSetting(handle, "priority_format"))]
+    setting = xbmcplugin.getSetting(handle, "priority_format")
+    result = [["mp3"], ["mp3", "aac"], ["aac", "mp3"], ["aac"], ][int(setting)]
+    print "Format setting is %s, using priority %s" % (setting, str(result))
+    return result
 
 
 def quality_priority():
-    return [
-        ['slowpls', 'fastpls', 'highestpls', ],
-        ['fastpls', 'slowpls', 'highestpls', ],
-        ['fastpls', 'highestpls', 'slowpls', ],
-        ['highestpls', 'fastpls', 'slowpls', ],
-    ][int(xbmcplugin.getSetting(handle, "priority_quality"))]
+    setting = xbmcplugin.getSetting(handle, "priority_quality")
+    result = [['slowpls', 'fastpls', 'highestpls', ], ['fastpls', 'slowpls', 'highestpls', ],
+                ['fastpls', 'highestpls', 'slowpls', ], ['highestpls', 'fastpls', 'slowpls', ], ][int(setting)]
+    print "Bla"
+    print "Quality setting is %s, using priority %s" % (setting, str(result))
+    return result
 
 
 def cache_ttl_in_ms():
-    return [
-        0, __ms_per_day__, 7 * __ms_per_day__, 30 * __ms_per_day__
-    ][int(xbmcplugin.getSetting(handle, "cache_ttl"))]
+    setting = xbmcplugin.getSetting(handle, "cache_ttl")
+    result = [0, __ms_per_day__, 7 * __ms_per_day__, 30 * __ms_per_day__][int(setting)]
+    print "Cache setting is %s, using ttl of %dms" % (setting, result)
+    return result
 
 
 def play(item_to_play):
