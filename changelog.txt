@@ -1,4 +1,4 @@
-[B]Version 1.0.1- 2015-01-01[/B]
+[B]Version 1.0.1 - 2015-01-01[/B]
 
 - Fix playback on Android client
 
