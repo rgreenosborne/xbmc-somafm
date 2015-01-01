@@ -20,7 +20,7 @@ CHANNELS_FILE_NAME = "channels.xml"
 
 __addon__ = "SomaFM"
 __addonid__ = "plugin.audio.somafm"
-__version__ = "0.0.2"
+__version__ = "1.0.1"
 
 __ms_per_day__ = 24 * 60 * 60 * 1000
 
