@@ -43,8 +43,8 @@ msgid "Refresh channel list from server"
 msgstr "Ververs kanaallijst van server"
 
 msgctxt "#32009"
-msgid "Please consider donating to keep SomaFM alive.\nVisit http://somafm.com"
-msgstr "Doneer a.u.b. om SomaFM in leven te houden.\nGa naar http://somafm.com"
+msgid "Please consider donating to keep SomaFM alive.\nVisit https://somafm.com"
+msgstr "Doneer a.u.b. om SomaFM in leven te houden.\nGa naar https://somafm.com"
 
 #enums
 

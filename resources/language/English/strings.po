@@ -43,7 +43,7 @@ msgid "Refresh channel list from server"
 msgstr ""
 
 msgctxt "#32009"
-msgid "Please consider donating to keep SomaFM alive.\nVisit http://somafm.com"
+msgid "Please consider donating to keep SomaFM alive.\nVisit https://somafm.com"
 msgstr ""
 
 #enums

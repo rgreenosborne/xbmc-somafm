@@ -31,7 +31,7 @@ def log(msg):
 
 log(sys.argv)
 
-rootURL = "http://somafm.com/"
+rootURL = "https://somafm.com/"
 tempdir = xbmc.translatePath("special://temp/somafm")
 xbmcvfs.mkdirs(tempdir)
 
