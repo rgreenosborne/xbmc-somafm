@@ -1,6 +1,8 @@
 SomaFM XBMC Plugin
 ==================
 
+![SomaFM icon](icon.png?raw=true)
+
 Installation
 ------------
 
@@ -34,3 +36,5 @@ Again on Linux and possibly Mac OSX
     unzip xbmc-somafm-master.zip 
     mv xbmc-somafm-master/ plugin.audio.somafm
     mv plugin.audio.somafm/ ~/kodi/addons/
+
+![SomaFM fanart](fanart.jpg?raw=true)
