@@ -2,7 +2,7 @@
 <addon id="plugin.audio.somafm"
        name="SomaFM"
        version="1.0.2"
-       provider-name="Oderik">
+       provider-name="Oderik and PanderMusubi">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
         <import addon="script.module.beautifulsoup" version="3.0.8"/>
