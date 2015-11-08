@@ -1,3 +1,9 @@
+[B]Version 1.0.2 - 2015-11-08[/B]
+
+- Dutch translation and some polishing by PanderMusubi - thanks!
+
+
+
 [B]Version 1.0.1 - 2015-01-01[/B]
 
 - Fix playback on Android client
