@@ -26,13 +26,13 @@ __ms_per_day__ = 24 * 60 * 60 * 1000
 
 
 def log(msg):
-    xbmc.log(str(msg))
+    xbmc.log(str(msg), level=xbmc.LOGDEBUG)
 
 
 log(sys.argv)
 
 rootURL = "https://somafm.com/"
-tempdir = xbmc.translatePath("special://temp/somafm")
+tempdir = xbmc.translatePath("special://home/userdata/addon_data/%s" % __addonid__)
 xbmcvfs.mkdirs(tempdir)
 
 LOCAL_CHANNELS_FILE_PATH = os.path.join(tempdir, CHANNELS_FILE_NAME)
