@@ -38,3 +38,5 @@ Again on Linux and possibly Mac OSX
     mv plugin.audio.somafm/ ~/kodi/addons/
 
 ![SomaFM fanart](fanart.jpg?raw=true)
+
+Lone DJ photo ©2000 Merin McDonell. Used with permission.
