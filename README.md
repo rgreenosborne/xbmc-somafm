@@ -3,6 +3,8 @@ SomaFM XBMC Plugin
 
 ![SomaFM icon](icon.png?raw=true)
 
+This description is a bit outdated. You can simply install this `addon` by browsing the official repositories from within Kodi.
+
 Installation
 ------------
 
