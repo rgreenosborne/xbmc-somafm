@@ -1,4 +1,4 @@
-[B]Version 1.0.3 - 2016-02-22[/B]
+[B]Version 1.1.0 - 2016-02-22[/B]
 
 - Remove firewall mode in response to the SomaFM streaming server update
 
