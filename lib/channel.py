@@ -1,8 +1,8 @@
 import os
 import random
 import shutil
-import urllib2
-import urlparse
+import urllib.request, urllib.error, urllib.parse
+import urllib.parse
 from xml.etree import ElementTree
 
 import xbmc
@@ -70,12 +70,12 @@ class Channel(object):
             os.makedirs(filepath)
 
     def get_playlist_file(self, playlist_url):
-        url_path = urlparse.urlparse(playlist_url).path
+        url_path = urllib.parse.urlparse(playlist_url).path
         filename = os.path.split(url_path)[1]
         filepath = os.path.join(self.cache_dir, filename)
         filepath = os.path.abspath(filepath)
         if not os.path.exists(filepath):
-            response = urllib2.urlopen(playlist_url)
+            response = urllib.request.urlopen(playlist_url)
             self.prepare_cache()
             with open(os.path.abspath(filepath), "w") as playlist_file:
                 playlist_file.write(response.read())
@@ -84,13 +84,13 @@ class Channel(object):
 
     def get_content_url(self):
         for playlist_meta in self.get_prioritized_playlists():
-            print "Trying " + str(playlist_meta)
+            print("Trying " + str(playlist_meta))
             filepath = self.get_playlist_file(playlist_meta[2])
             play_list = xbmc.PlayList(PLAYLIST_MUSIC)
             play_list.load(filepath)
             streams = []
             for i in range(0, play_list.size()):
-                stream_url = play_list.__getitem__(i).getfilename()
+                stream_url = play_list.__getitem__(i).getPath()
                 streams.append(stream_url)
             if len(streams) > 0:
                 return random.choice(streams)

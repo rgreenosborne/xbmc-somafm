@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.audio.somafm"
        name="SomaFM"
-       version="1.1.0"
-       provider-name="Oderik and PanderMusubi">
+       version="1.1.1"
+       provider-name="Oderik,PanderMusubi,void-spark">
     <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
-        <import addon="script.module.beautifulsoup" version="3.0.8"/>
+        <import addon="xbmc.python" version="3.0.0"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>audio</provides>
@@ -31,6 +30,6 @@ Meer dan 20 unieke kanalen van luisteraarondersteunde, reclamevrije, alternatiev
 Overweeg a.u.b. een donatie te doen op https://somafm.com om deze service in leven te houden!
         ]]></description>
         <website>https://somafm.com</website>
-        <source>https://github.com/Oderik/xbmc-somafm</source>
+        <source>https://github.com/void-spark/xbmc-somafm</source>
     </extension>
 </addon>
