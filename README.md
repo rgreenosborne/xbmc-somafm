@@ -1,4 +1,4 @@
-SomaFM XBMC Plugin
+SomaFM XBMC Plugin - Updated for Matrix 19, but not in official repo.
 ==================
 
 ![SomaFM icon](icon.png?raw=true)
