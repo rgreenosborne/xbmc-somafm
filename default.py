@@ -1,7 +1,7 @@
 import os
 import shutil
 import sys
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
 import urllib.parse
 import xml.etree.ElementTree as ET
 import time
@@ -32,7 +32,7 @@ def log(msg):
 log(sys.argv)
 
 rootURL = "https://somafm.com/"
-tempdir = xbmc.translatePath("special://home/userdata/addon_data/%s" % __addonid__)
+tempdir = xbmcvfs.translatePath("special://home/userdata/addon_data/%s" % __addonid__)
 xbmcvfs.mkdirs(tempdir)
 
 LOCAL_CHANNELS_FILE_PATH = os.path.join(tempdir, CHANNELS_FILE_NAME)
@@ -48,12 +48,10 @@ except:
 
 
 def fetch_remote_channel_data():
-    response = urllib.request.urlopen(rootURL + CHANNELS_FILE_NAME)
-    channel_data = response.read()
-    response.close()
-    with open(LOCAL_CHANNELS_FILE_PATH, 'w') as local_channels_xml:
-        local_channels_xml.write(channel_data)
-    return channel_data
+    with urllib.request.urlopen(rootURL + CHANNELS_FILE_NAME) as response:
+        with open(LOCAL_CHANNELS_FILE_PATH, 'wb') as local_channels_xml:
+            shutil.copyfileobj(response, local_channels_xml)
+    return fetch_local_channel_data()
 
 
 def fetch_local_channel_data():
@@ -93,7 +91,7 @@ def build_directory():
         li.setArt({
             "icon" : channel.geticon(),
             "thumb" : channel.getthumbnail(),
-            "fanart" : xbmc.translatePath("special://home/addons/%s/fanart.jpg" % __addonid__)
+            "fanart" : xbmcvfs.translatePath("special://home/addons/%s/fanart.jpg" % __addonid__)
             })
 
         li.setProperty("IsPlayable", "true")
@@ -156,7 +154,7 @@ def play(item_to_play):
     list_item.setArt({
             "icon" : channel.geticon(),
             "thumb" : channel.getthumbnail(),
-            "fanart" : xbmc.translatePath("special://home/addons/%s/fanart.jpg" % __addonid__)
+            "fanart" : xbmcvfs.translatePath("special://home/addons/%s/fanart.jpg" % __addonid__)
         })
     xbmcplugin.setResolvedUrl(handle, True, list_item)
 

@@ -1,16 +1,12 @@
 import os
 import random
 import shutil
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
 import urllib.parse
 from xml.etree import ElementTree
 
 import xbmc
 from xbmc import PLAYLIST_MUSIC
-
-
-__author__ = 'Oderik'
-
 
 class Channel(object):
     def prepare_cache(self):
@@ -75,11 +71,10 @@ class Channel(object):
         filepath = os.path.join(self.cache_dir, filename)
         filepath = os.path.abspath(filepath)
         if not os.path.exists(filepath):
-            response = urllib.request.urlopen(playlist_url)
-            self.prepare_cache()
-            with open(os.path.abspath(filepath), "w") as playlist_file:
-                playlist_file.write(response.read())
-            response.close()
+            with urllib.request.urlopen(playlist_url) as response:
+                self.prepare_cache()
+                with open(os.path.abspath(filepath), "wb") as playlist_file:
+                    shutil.copyfileobj(response, playlist_file)
         return filepath
 
     def get_content_url(self):
